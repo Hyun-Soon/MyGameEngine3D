@@ -2,7 +2,6 @@
 
 #include "SkinnedMeshModel.h"
 #include "WindowManager.h"
-#include "GlobalConstants.h"
 
 class Application
 {

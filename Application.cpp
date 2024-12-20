@@ -291,7 +291,7 @@ void Application::Run()
 	// Object golfBat("C:/Users/Soon/Desktop/Application/Assets/", "golf_bat_bin.fbx", "GradientPalette.png");
 	// Object golfBat("C:/Users/Soon/Desktop/Application/Assets/", "AgarthanBody.fbx"); //, "nemlemtemptex.png");
 	// Object golfBat("C:/Users/Soon/Desktop/HonglabGraphics/Part4/Assets/Characters/Mixamo", "character.fbx", "Ch03_1001_Diffuse.png");
-	SkinnedMeshModel swat(mDevice, mContext, "C:/Users/Soon/Desktop/Application/Assets/", "Swat.fbx", { "CatwalkIdle.fbx" });
+	SkinnedMeshModel swat(mDevice, mContext, "C:/Users/Soon/Desktop/MyGameEngine3D/Assets/", "Swat.fbx", { "CatwalkIdle.fbx" });
 	swat.UpdateWorldRow(DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 3.0f));
 
 	const HWND window = mWindow;
