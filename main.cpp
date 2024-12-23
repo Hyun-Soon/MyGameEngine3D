@@ -1,10 +1,5 @@
 #include "Application.h"
 
-/*
- * TODO
- * 1. Implement SkinnedMeshModel
- */
-
 // 디버깅 위해서 main 함수 사용. 위 함수 사용하려면 sln -> properties -> Linker -> System -> Subsystem -> Windows로 설정
 // int main()
 // int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE, char*, int)

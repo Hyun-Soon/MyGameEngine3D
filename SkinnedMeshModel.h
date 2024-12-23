@@ -62,35 +62,27 @@ public:
 		}
 	}
 
-	// void UpdateAnimation(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, int clipId,
-	//	int frame) override
-	//{
+	void UpdateAnimation(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+		int															  clipId,
+		int															  frame)
+	{
 
-	//	mAniData.Update(clipId, frame);
+		mAniData.Update(clipId, frame);
 
-	//	for (int i = 0; i < mBoneTransforms.m_cpu.size(); i++)
-	//	{
-	//		mBoneTransforms.m_cpu[i] =
-	//			m_aniData.Get(clipId, i, frame).Transpose();
-	//	}
+		for (int i = 0; i < mBoneTransforms.mCpu.size(); i++)
+		{
+			mBoneTransforms.mCpu[i] = mAniData.Get(clipId, i, frame).Transpose();
+		}
 
-	//	mBoneTransforms.Upload(context);
-	//}
+		mBoneTransforms.Upload(context);
+	}
 
-	// void Render(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context) override
-	//{
+	const size_t GetClipKeySize()
+	{
+		return mAniData.clips[mState].keys.size();
+	}
 
-	//	// ConstBuffer 대신 StructuredBuffer 사용
-	//	// context->VSSetConstantBuffers(3, 1, m_skinnedConsts.GetAddressOf());
-
-	//	context->VSSetShaderResources(
-	//		9, 1, m_boneTransforms.GetAddressOfSRV()); // 항상 slot index 주의
-
-	//	// Skinned VS/PS는 GetPSO()를 통해서 지정되기 때문에
-	//	// Model::Render(.)를 같이 사용 가능
-
-	//	Model::Render(context);
-	//};
+	virtual void Render(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context) override;
 
 	// SkinnedMesh는 BoundingBox를 그릴 때 Root의 Transform을 반영해야 합니다.
 	// virtual void RenderWireBoundingBox(Microsoft::WRL::ComPtr<ID3D11DeviceContext> &context);
@@ -102,4 +94,6 @@ private:
 	StructuredBuffer<DirectX::SimpleMath::Matrix> mBoneTransforms;
 
 	AnimationData mAniData;
+
+	int mState = 0;
 };

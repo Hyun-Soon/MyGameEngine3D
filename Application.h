@@ -1,7 +1,10 @@
 #pragma once
 
+#include <directxmath.h>
+
 #include "SkinnedMeshModel.h"
 #include "WindowManager.h"
+#include "Camera.h"
 
 class Application
 {
@@ -27,6 +30,10 @@ private:
 	bool createRenderTargetView();
 	bool createRasterizerState();
 	bool createDepthStencilBuffer();
+	bool createSamplerState();
+	bool initShaders();
+
+	void setViewport();
 
 	struct Resolution
 	{
@@ -50,16 +57,19 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>		mSamplerState;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> mVertexShader;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>  mLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>  mInputLayout;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>  mPixelShader;
 
 	ConstantBuffer<GlobalConstants> mGlobalConstantsBuffer;
 
-	D3D11_VIEWPORT viewport;
+	D3D11_VIEWPORT mViewport;
 
 	UINT			  mNumQualityLevel = 0;
 	Resolution		  mResolution;
 	D3D_FEATURE_LEVEL mFeatureLevel;
 
-	// std::vector<Model> mModelList;
+	Camera mCamera;
+
+	std::vector<SkinnedMeshModel> mModelList;
+	int							  frameCount = 0;
 };

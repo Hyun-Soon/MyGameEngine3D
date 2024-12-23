@@ -715,10 +715,10 @@ void D3D11Utils::CreateStructuredBuffer(
 
 	D3D11_BUFFER_DESC bufferDesc;
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	bufferDesc.ByteWidth = numElements * sizeElement;
-	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | // Compute Shader
-		D3D11_BIND_SHADER_RESOURCE;						 // Vertex Shader
+	bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE; // Vertex Shader
+	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferDesc.StructureByteStride = sizeElement;
 	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 
@@ -730,7 +730,7 @@ void D3D11Utils::CreateStructuredBuffer(
 		ZeroMemory(&bufferData, sizeof(bufferData));
 		bufferData.pSysMem = initData;
 		if (!CheckResult(device->CreateBuffer(&bufferDesc, &bufferData, buffer.GetAddressOf())))
-			; // return false;
+			std::cerr << "CreateStructuredBuffer() failed." << std::endl; // return false;
 	}
 	else
 	{

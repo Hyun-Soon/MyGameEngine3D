@@ -23,6 +23,9 @@ bool Application::Initialize()
 
 	InitializeWindow();
 	InitializeDirectX();
+
+	mContext->OMSetRenderTargets(1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
+
 	mGlobalConstantsBuffer.Initialize(mDevice);
 
 	return true;
@@ -110,10 +113,11 @@ bool Application::InitializeDirectX()
 	// if (!createVertexConstantBuffer())
 	//	return false;
 
-	// if (!createSamplerState())
-	//	return false;
+	if (!createSamplerState())
+		return false;
 
-	// setViewport(res);
+	if (!initShaders())
+		return false;
 
 	return true;
 }
@@ -285,14 +289,71 @@ bool Application::createDepthStencilBuffer()
 	return true;
 }
 
+bool Application::createSamplerState()
+{
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// Create the Sample State
+	HRESULT hr = mDevice->CreateSamplerState(&sampDesc, mSamplerState.GetAddressOf());
+	if (FAILED(hr))
+	{
+		OutputDebugString(L"CreateSamplerState() failed.\n");
+		return false;
+	}
+	return true;
+}
+
+bool Application::initShaders()
+{
+	std::vector<D3D11_INPUT_ELEMENT_DESC> skinnedIEs = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+			D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12,
+			D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24,
+			D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32,
+			D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 44,
+			D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 60,
+			D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDICES", 1, DXGI_FORMAT_R8G8B8A8_UINT, 0, 76,
+			D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+
+	D3D11Utils::CreateVertexShaderAndInputLayout(mDevice, L"VertexShader.hlsl", skinnedIEs, mVertexShader, mInputLayout);
+	D3D11Utils::CreatePixelShader(mDevice, L"PixelShader.hlsl", mPixelShader);
+}
+
+void Application::setViewport()
+{
+	// Set the viewport
+	ZeroMemory(&mViewport, sizeof(D3D11_VIEWPORT));
+	mViewport.TopLeftX = 0;
+	mViewport.TopLeftY = 0;
+	mViewport.Width = float(mResolution.width);
+	mViewport.Height = float(mResolution.height);
+	mViewport.MinDepth = 0.0f;
+	mViewport.MaxDepth = 1.0f;
+
+	mContext->RSSetViewports(1, &mViewport);
+}
+
 void Application::Run()
 {
-
-	// Object golfBat("C:/Users/Soon/Desktop/Application/Assets/", "golf_bat_bin.fbx", "GradientPalette.png");
-	// Object golfBat("C:/Users/Soon/Desktop/Application/Assets/", "AgarthanBody.fbx"); //, "nemlemtemptex.png");
-	// Object golfBat("C:/Users/Soon/Desktop/HonglabGraphics/Part4/Assets/Characters/Mixamo", "character.fbx", "Ch03_1001_Diffuse.png");
 	SkinnedMeshModel swat(mDevice, mContext, "C:/Users/Soon/Desktop/MyGameEngine3D/Assets/", "Swat.fbx", { "CatwalkIdle.fbx" });
 	swat.UpdateWorldRow(DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 3.0f));
+
+	mModelList.push_back(swat);
 
 	const HWND window = mWindow;
 	MSG		   msg = { 0 };
@@ -307,21 +368,48 @@ void Application::Run()
 		{
 			update();
 			render();
-			//// Render
-			// r += 2.0f;
-			// swat.RotateY(DirectX::XMConvertToRadians(r));
-
-			// mDxManager.Render(swat);
 		}
 	}
 }
 
 void Application::update()
 {
+	if (frameCount == mModelList[0].GetClipKeySize())
+		frameCount = 0;
+	else
+		++frameCount;
+
+	mModelList[0].UpdateAnimation(mContext, 0, frameCount);
+
+	UpdateGlobalConstants(0.01,
+		mCamera.GetEyePos(),
+		mCamera.GetViewRow(),
+		mCamera.GetProjRow());
 }
 
 void Application::render()
 {
+	setViewport();
+
+	mContext->VSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+	mContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+
+	const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	mContext->ClearRenderTargetView(mRenderTargetView.Get(), clearColor);
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	mGlobalConstantsBuffer.Upload(mContext);
+
+	mContext->VSSetShader(mVertexShader.Get(), 0, 0);
+	mContext->IASetInputLayout(mInputLayout.Get());
+	mContext->PSSetShader(mPixelShader.Get(), 0, 0);
+	mContext->RSSetState(mRasterizerState.Get());
+	mContext->OMSetDepthStencilState(mDepthStencilState.Get(), 0);
+	// setRenderTargetView in init func
+	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// TODO :: implement Model::Render(), SkinnedMeshModel::Render().
+	mModelList[0].Render();
 }
 
 // const HWND& Application::GetWindow() const

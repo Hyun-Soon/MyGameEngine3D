@@ -26,12 +26,12 @@ public:
 
 	void Upload(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
 	{
-		Upload(context, mCpu);
-	}
+		// Upload(context, mCpu);
 
-	void Download(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
-	{
-		Download(context, mCpu);
+		D3D11_MAPPED_SUBRESOURCE ms;
+		context->Map(mGpu.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+		memcpy(ms.pData, mCpu.data(), mCpu.size() * sizeof(T_ELEMENT));
+		context->Unmap(mGpu.Get(), NULL);
 	}
 
 	const auto GetBuffer() { return mGpu.Get(); }

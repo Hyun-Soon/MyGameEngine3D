@@ -33,6 +33,8 @@ public:
 
 	void UpdateWorldRow(const DirectX::SimpleMath::Matrix& worldRow);
 
+	virtual void Render(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
+
 private:
 	DirectX::SimpleMath::Matrix mWorldRow = DirectX::SimpleMath::Matrix(); // Model(Model) To World За·Д
 
