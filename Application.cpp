@@ -411,32 +411,3 @@ void Application::render()
 	// TODO :: implement Model::Render(), SkinnedMeshModel::Render().
 	mModelList[0].Render();
 }
-
-// const HWND& Application::GetWindow() const
-//{
-//	return this->mWindow;
-// }
-
-// const Microsoft::WRL::ComPtr<ID3D11Device>& Application::GetDevice() const
-//{
-//	return this->mDxData.device;
-// }
-//
-// const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& Application::GetContext() const
-//{
-//	return this->mDxData.context;
-// }
-//
-// void Application::SwitchBackBuffer()
-//{
-//	mDxData.swapChain->Present(1, 0);
-// }
-//
-// void Application::Render()
-//{
-// }
-//
-// DX11Data& Application::getDxData()
-//{
-//	return mDxData;
-// }
