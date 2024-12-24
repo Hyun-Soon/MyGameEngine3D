@@ -385,6 +385,8 @@ void Application::update()
 		mCamera.GetEyePos(),
 		mCamera.GetViewRow(),
 		mCamera.GetProjRow());
+
+	mContext->VSSetConstantBuffers(0, 1, mGlobalConstantsBuffer.GetAddressOf());
 }
 
 void Application::render()
@@ -409,5 +411,5 @@ void Application::render()
 	mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// TODO :: implement Model::Render(), SkinnedMeshModel::Render().
-	mModelList[0].Render();
+	mModelList[0].Render(mContext);
 }

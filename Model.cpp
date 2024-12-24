@@ -61,6 +61,26 @@ void Model::UpdateWorldRow(const DirectX::SimpleMath::Matrix& worldRow)
 	mModelConsts.GetCpu().world = worldRow.Transpose();
 }
 
+void Model::Render(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+{
+	mModelConsts.Upload(context);
+	context->VSSetConstantBuffers(1, 2, mModelConsts.GetAddressOf());
+	for (const Mesh* mesh : mMeshes)
+	{
+		// 물체 렌더링할 때 여러가지 텍스춰 사용 (register t0 부터시작)
+		context->PSSetShaderResources(0, 1, mesh->srv.GetAddressOf());
+
+		context->IASetVertexBuffers(0, 1, mesh->vertexBuffer.GetAddressOf(),
+			&mesh->stride, 0);
+		context->IASetIndexBuffer(mesh->indexBuffer.Get(),
+			DXGI_FORMAT_R32_UINT, 0);
+		context->DrawIndexed(mesh->indexCount, 0, 0);
+
+		// Release resources
+		context->PSSetShaderResources(0, 1, nullptr);
+	}
+}
+
 void Model::InitMeshBuffers(Microsoft::WRL::ComPtr<ID3D11Device>& device,
 	const MeshData&												  meshData,
 	Mesh*														  newMesh)
