@@ -42,6 +42,7 @@ public:
 		newMesh->indexCount = UINT(meshData.indices.size());
 		newMesh->vertexCount = UINT(meshData.skinnedVertices.size());
 		newMesh->stride = UINT(sizeof(SkinnedVertex));
+		newMesh->offset = 0;
 		D3D11Utils::CreateIndexBuffer(device, meshData.indices,
 			newMesh->indexBuffer);
 	}

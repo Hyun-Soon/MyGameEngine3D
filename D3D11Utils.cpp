@@ -738,13 +738,14 @@ void D3D11Utils::CreateStructuredBuffer(
 			; // return false;
 	}
 
-	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
-	ZeroMemory(&uavDesc, sizeof(uavDesc));
-	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	uavDesc.Buffer.NumElements = numElements;
-	device->CreateUnorderedAccessView(buffer.Get(), &uavDesc,
-		uav.GetAddressOf());
+	// Not Use Compute Shader
+	// D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+	// ZeroMemory(&uavDesc, sizeof(uavDesc));
+	// uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+	// uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+	// uavDesc.Buffer.NumElements = numElements;
+	// device->CreateUnorderedAccessView(buffer.Get(), &uavDesc,
+	//	uav.GetAddressOf());
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	ZeroMemory(&srvDesc, sizeof(srvDesc));

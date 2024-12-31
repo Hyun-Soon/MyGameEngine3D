@@ -27,6 +27,7 @@ struct SkinnedVertex
 	SkinnedVertex()
 		: position(0.0f, 0.0f, 0.0f), normalModel(0.0f, 0.0f, 0.0f), texcoord(0.0f, 0.0f) {};
 };
+static_assert(sizeof(SkinnedVertex) % 4 == 0, "VertexType size is not aligned!");
 
 struct VertexConstantData
 {
