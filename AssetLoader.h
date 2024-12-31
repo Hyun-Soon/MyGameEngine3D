@@ -273,8 +273,8 @@ public:
 
 		for (UINT i = 0; i < node->mNumMeshes; i++)
 		{
-			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			auto	newMesh = this->ProcessMesh(mesh, scene);
+			aiMesh*	 mesh = scene->mMeshes[node->mMeshes[i]];
+			MeshData newMesh = this->ProcessMesh(mesh, scene);
 			for (VERTEX_TYPE& v : newMesh.vertices)
 			{
 				v.position = DirectX::SimpleMath::Vector3::Transform(v.position, m);

@@ -15,4 +15,5 @@ struct Mesh
 	UINT vertexCount;
 	UINT indexCount;
 	UINT stride;
+	UINT offset;
 };

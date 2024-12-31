@@ -7,9 +7,10 @@
 // int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int)
 int main()
 {
-	const int	width = 1280;
-	const int	height = 960;
-	Application app(width, height);
+	const int							 width = 1280;
+	const int							 height = 960;
+	Application							 app(width, height);
+	Microsoft::WRL::ComPtr<ID3D11Buffer> test;
 
 	if (!app.Initialize())
 		return 1;

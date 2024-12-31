@@ -322,16 +322,18 @@ bool Application::initShaders()
 			D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32,
 			D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BLENDWEIGHT", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 44,
+		{ "BLENDWEIGHT", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 48,
 			D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 60,
+		{ "BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, 64,
 			D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BLENDINDICES", 1, DXGI_FORMAT_R8G8B8A8_UINT, 0, 76,
+		{ "BLENDINDICES", 1, DXGI_FORMAT_R8G8B8A8_UINT, 0, 68,
 			D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	D3D11Utils::CreateVertexShaderAndInputLayout(mDevice, L"VertexShader.hlsl", skinnedIEs, mVertexShader, mInputLayout);
 	D3D11Utils::CreatePixelShader(mDevice, L"PixelShader.hlsl", mPixelShader);
+
+	return true;
 }
 
 void Application::setViewport()
@@ -350,7 +352,7 @@ void Application::setViewport()
 
 void Application::Run()
 {
-	SkinnedMeshModel swat(mDevice, mContext, "C:/Users/Soon/Desktop/MyGameEngine3D/Assets/", "Swat.fbx", { "CatwalkIdle.fbx" });
+	SkinnedMeshModel swat(mDevice, mContext, "C:/Users/Soon/Desktop/ROR2_Resources/Animator/AcidLarva/", "AcidLarva.fbx", {});
 	swat.UpdateWorldRow(DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 3.0f));
 
 	mModelList.push_back(swat);

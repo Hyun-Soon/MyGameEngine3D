@@ -9,8 +9,6 @@ PixelShaderInput main(VertexShaderInput input)
     
     PixelShaderInput output;
     
-#ifdef SKINNED
-    
     // 참고 자료: Luna DX 12 교재
     
     float weights[8];
@@ -34,32 +32,21 @@ PixelShaderInput main(VertexShaderInput input)
     indices[7] = input.boneIndices1.w;
 
     float3 posModel = float3(0.0f, 0.0f, 0.0f);
-    float3 normalModel = float3(0.0f, 0.0f, 0.0f);
     float3 tangentModel = float3(0.0f, 0.0f, 0.0f);
     
     // Uniform Scaling 가정
     // (float3x3)boneTransforms 캐스팅으로 Translation 제외
-    for(int i = 0; i < 8; ++i)
+    for (int i = 0; i < 8; ++i)
     {
-        // TODO:
         posModel += weights[i] * mul(float4(input.posModel, 1.0f), boneTransforms[indices[i]]).xyz;
-        normalModel += weights[i] * mul(input.normalModel, (float3x3)boneTransforms[indices[i]]);
-        tangentModel += weights[i] * mul(input.tangentModel, (float3x3)boneTransforms[indices[i]]);
     }
 
     input.posModel = posModel;
-    input.normalModel = normalModel;
-    input.tangentModel = tangentModel;
 
-#endif
-    
-    output.posModel = input.posModel;
-    output.normalWorld = mul(float4(input.normalModel, 0.0f), worldIT).xyz;
-    output.normalWorld = normalize(output.normalWorld);
-    output.posWorld = mul(float4(input.posModel, 1.0f), world).xyz;
+    output.posWorld = mul(float4(input.posModel, 1.0f), world);
 
 
-    output.posProj = mul(float4(output.posWorld, 1.0), viewProj);
+    output.posWorld = mul(output.posWorld, proj);
     output.texcoord = input.texcoord;
 
     return output;

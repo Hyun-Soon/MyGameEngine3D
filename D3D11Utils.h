@@ -128,7 +128,8 @@ public:
 		initData.SysMemSlicePitch = 0;
 
 		if (CheckResult(device->CreateBuffer(&desc, &initData, constantBuffer.GetAddressOf())))
-			; // return false;
+			;
+		// exit(1); // return false;
 	}
 
 	template <typename T_DATA>

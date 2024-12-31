@@ -21,8 +21,10 @@ public:
 		const std::string&								  filename,
 		const std::vector<std::string>&					  animFilenames)
 	{
-		AssetLoader	  assetLoader;
-		AnimationData aniData = assetLoader.LoadAnimations(basePath, animFilenames);
+		AssetLoader			  assetLoader;
+		AnimationData		  aniData;
+		std::vector<MeshData> meshData;
+		tie(meshData, aniData) = assetLoader.LoadModelWithAnimation(basePath, filename);
 
 		/*GeometryGenerator::Normalize(Vector3(0.0f), 1.0f, modelLoader.m_meshes,
 			modelLoader.m_aniData);*/

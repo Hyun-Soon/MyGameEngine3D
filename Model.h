@@ -40,5 +40,5 @@ private:
 
 	std::vector<Mesh*> mMeshes;
 
-	ConstantBuffer<ModelConstants> mModelConsts; // TODO :: setting and upload
+	ConstantBuffer<ModelConstants> mModelConsts;
 };
