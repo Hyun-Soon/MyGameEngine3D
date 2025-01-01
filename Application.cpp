@@ -352,10 +352,10 @@ void Application::setViewport()
 
 void Application::Run()
 {
-	SkinnedMeshModel swat(mDevice, mContext, "C:/Users/Soon/Desktop/ROR2_Resources/Animator/AcidLarva/", "AcidLarva.fbx", {});
-	swat.UpdateWorldRow(DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 3.0f));
+	SkinnedMeshModel larva(mDevice, mContext, "C:/Users/Soon/Desktop/ROR2_Resources/Animator/AcidLarva/", "AcidLarva.fbx", {});
+	larva.UpdateWorldRow(DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 30.0f));
 
-	mModelList.push_back(swat);
+	mModelList.push_back(larva);
 
 	const HWND window = mWindow;
 	MSG		   msg = { 0 };
@@ -414,4 +414,6 @@ void Application::render()
 
 	// TODO :: implement Model::Render(), SkinnedMeshModel::Render().
 	mModelList[0].Render(mContext);
+
+	mSwapChain->Present(1, 0);
 }

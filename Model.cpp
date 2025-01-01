@@ -75,7 +75,7 @@ void Model::Render(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
 		context->DrawIndexed(mesh->indexCount, 0, 0);
 
 		// Release resources
-		// context->PSSetShaderResources(0, 1, nullptr);
+		// context->PSSetShaderResources(0, 1, someSRV);
 	}
 }
 
